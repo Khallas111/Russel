@@ -4,7 +4,7 @@ const User = require("../models/user");
  * GET /users
  * Récupérer tous les utilisateurs
  */
-exports.getAll = async (req, res) => {
+exports.getAll = async (req, res, next) => {
   try {
     const users = await User.find().select("-password");
     return res.status(200).json(users);
@@ -17,7 +17,7 @@ exports.getAll = async (req, res) => {
  * GET /users/:email
  * Récupérer un utilisateur par email
  */
-exports.getByEmail = async (req, res) => {
+exports.getByEmail = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.params.email }).select(
       "-password",
@@ -37,7 +37,7 @@ exports.getByEmail = async (req, res) => {
  * POST /users
  * Créer un nouvel utilisateur
  */
-exports.add = async (req, res) => {
+exports.add = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
@@ -56,7 +56,7 @@ exports.add = async (req, res) => {
  * PUT /users/:email
  * Mettre à jour un utilisateur (username ou password uniquement)
  */
-exports.update = async (req, res) => {
+exports.update = async (req, res, next) => {
   try {
     const user = await User.findOne({ email: req.params.email });
 
@@ -87,7 +87,7 @@ exports.update = async (req, res) => {
  * DELETE /users/:email
  * Supprimer un utilisateur
  */
-exports.delete = async (req, res) => {
+exports.delete = async (req, res, next) => {
   try {
     const user = await User.findOneAndDelete({
       email: req.params.email,
