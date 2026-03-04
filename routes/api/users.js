@@ -11,7 +11,7 @@ const usersController = require("../../controllers/users");
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   get:
  *     summary: Récupérer tous les utilisateurs
  *     tags: [Users]
@@ -30,7 +30,7 @@ router.get("/", usersController.getAll);
 
 /**
  * @swagger
- * /users/{email}:
+ * /api/users/{email}:
  *   get:
  *     summary: Récupérer un utilisateur par son email
  *     tags: [Users]
@@ -52,7 +52,7 @@ router.get("/:email", usersController.getByEmail);
 
 /**
  * @swagger
- * /users:
+ * /api/users:
  *   post:
  *     summary: Créer un nouvel utilisateur
  *     tags: [Users]
@@ -75,7 +75,7 @@ router.post("/", usersController.add);
 
 /**
  * @swagger
- * /users/{email}:
+ * /api/users/{email}:
  *   put:
  *     summary: Mettre à jour un utilisateur (username ou password uniquement)
  *     tags: [Users]
@@ -106,7 +106,7 @@ router.put("/:email", usersController.update);
 
 /**
  * @swagger
- * /users/{email}:
+ * /api/users/{email}:
  *   delete:
  *     summary: Supprimer un utilisateur
  *     tags: [Users]
