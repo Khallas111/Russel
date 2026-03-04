@@ -10,7 +10,8 @@ const swaggerSpec = require("./docs/swagger");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/api/users");
-
+const catwaysRouter = require("./routes/api/catways");
+const reservationsRouter = require("./routes/api/reservations");
 var app = express();
 
 initClientDbConnection();
@@ -23,6 +24,14 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
+
+// Routes Catways
+app.use("/api/catways", catwaysRouter);
+
+// Routes Réservations (imbriquées dans Catways)
+// Exemple : GET /api/catways/123/reservations pour lister les réservations du catway 123
+app.use("/api/catways/:id/reservations", reservationsRouter);
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Middleware pour gérer les routes non trouvées (404)
