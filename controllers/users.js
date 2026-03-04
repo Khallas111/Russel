@@ -9,6 +9,12 @@ exports.getAll = async (req, res, next) => {
     const users = await User.find().select("-password");
     return res.status(200).json(users);
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Email déjà utilisé" });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -29,6 +35,9 @@ exports.getByEmail = async (req, res, next) => {
 
     return res.status(200).json(user);
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
