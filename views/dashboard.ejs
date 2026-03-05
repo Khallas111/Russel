@@ -8,28 +8,54 @@
   </head>
   <body>
     <main class="container">
-      <section class="card">
+      <section class="card wide">
         <h1>Tableau de bord</h1>
-        <p>Bienvenue <strong><%= user.username %></strong>.</p>
-        <ul>
-          <li>Email: <%= user.email %></li>
-          <li>Role: <%= user.role %></li>
-        </ul>
+        <p>Bienvenue <strong><%= user.username %></strong> (<%= user.email %>).</p>
+        <p>Date du jour: <strong><%= currentDate %></strong></p>
 
-        <div class="actions">
-          <a href="/catways">Page CRUD Catways</a>
-          <a href="/reservations">Page CRUD Reservations</a>
-          <% if (user.role === "admin") { %>
-          <a href="/users">Page CRUD Utilisateurs</a>
-          <% } %>
-          <a href="/api-docs" target="_blank" rel="noopener noreferrer">
-            Documentation API
-          </a>
+        <div class="actions menu">
+          <a href="/catways">CRUD Catways</a>
+          <a href="/reservations">CRUD Reservations</a>
+          <% if (user.role === "admin") { %><a href="/users">CRUD Utilisateurs</a><% } %>
+          <a href="/api-docs" target="_blank" rel="noopener noreferrer">Documentation API</a>
+          <form method="post" action="/logout" class="logout-form-inline">
+            <button type="submit">Se deconnecter</button>
+          </form>
         </div>
 
-        <form method="post" action="/logout" class="logout-form">
-          <button type="submit">Se deconnecter</button>
-        </form>
+        <h2>Reservations en cours</h2>
+        <% if (dashboardError) { %>
+        <p class="error"><%= dashboardError %></p>
+        <% } %>
+
+        <% if (!reservationsInProgress || reservationsInProgress.length === 0) { %>
+        <p>Aucune reservation en cours.</p>
+        <% } else { %>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Catway</th>
+                <th>Client</th>
+                <th>Bateau</th>
+                <th>Debut</th>
+                <th>Fin</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% reservationsInProgress.forEach((reservation) => { %>
+              <tr>
+                <td><%= reservation.catwayNumber %></td>
+                <td><%= reservation.clientName %></td>
+                <td><%= reservation.boatName %></td>
+                <td><%= new Date(reservation.startDate).toLocaleDateString("fr-FR") %></td>
+                <td><%= new Date(reservation.endDate).toLocaleDateString("fr-FR") %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
       </section>
     </main>
   </body>

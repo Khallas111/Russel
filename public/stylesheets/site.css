@@ -76,6 +76,18 @@ a {
   flex-wrap: wrap;
 }
 
+.menu {
+  align-items: center;
+}
+
+.logout-form-inline {
+  margin: 0;
+}
+
+.logout-form-inline button {
+  padding: 8px 12px;
+}
+
 .crud-grid {
   margin-top: 16px;
   display: grid;
@@ -103,5 +115,29 @@ a {
   padding: 12px;
   min-height: 120px;
   overflow: auto;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  background: #fff;
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #e7eef7;
+}
+
+.data-table th {
+  background: #f4f8ff;
 }
 
