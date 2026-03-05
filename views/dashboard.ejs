@@ -17,6 +17,11 @@
         </ul>
 
         <div class="actions">
+          <a href="/catways">Page CRUD Catways</a>
+          <a href="/reservations">Page CRUD Reservations</a>
+          <% if (user.role === "admin") { %>
+          <a href="/users">Page CRUD Utilisateurs</a>
+          <% } %>
           <a href="/api-docs" target="_blank" rel="noopener noreferrer">
             Documentation API
           </a>

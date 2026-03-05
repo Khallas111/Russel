@@ -25,6 +25,10 @@ body {
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
 }
 
+.card.wide {
+  max-width: 1080px;
+}
+
 h1 {
   margin-top: 0;
 }
@@ -67,5 +71,37 @@ a {
 
 .actions {
   margin-top: 14px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.crud-grid {
+  margin-top: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.card-lite {
+  border: 1px solid #dbe3ef;
+  border-radius: 10px;
+  padding: 14px;
+  background: #fbfdff;
+}
+
+.card-lite h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.output {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  min-height: 120px;
+  overflow: auto;
 }
 

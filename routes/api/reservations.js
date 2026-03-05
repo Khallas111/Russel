@@ -17,6 +17,8 @@ const authorizeRoles = require("../../middlewares/authorizeRoles");
  *   get:
  *     summary: Lister toutes les réservations d'un catway
  *     tags: [Reservations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -29,6 +31,8 @@ const authorizeRoles = require("../../middlewares/authorizeRoles");
  *         description: Liste des réservations
  *       404:
  *         description: Catway ou réservations non trouvés
+ *       401:
+ *         description: Token manquant ou invalide
  *       500:
  *         description: Erreur serveur
  */
@@ -40,6 +44,8 @@ router.get("/", auth, reservationsController.getAllForCatway);
  *   get:
  *     summary: Récupérer une réservation par son ID
  *     tags: [Reservations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -56,6 +62,8 @@ router.get("/", auth, reservationsController.getAllForCatway);
  *         description: Détails de la réservation
  *       404:
  *         description: Réservation non trouvée
+ *       401:
+ *         description: Token manquant ou invalide
  *       500:
  *         description: Erreur serveur
  */
@@ -67,6 +75,8 @@ router.get("/:idReservation", auth, reservationsController.getById);
  *   post:
  *     summary: Créer une réservation pour un catway
  *     tags: [Reservations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -87,6 +97,10 @@ router.get("/:idReservation", auth, reservationsController.getById);
  *         description: Réservation créée
  *       400:
  *         description: Requête invalide
+ *       401:
+ *         description: Token manquant ou invalide
+ *       403:
+ *         description: Acces reserve a l'admin
  *       500:
  *         description: Erreur serveur
  */
@@ -98,6 +112,8 @@ router.post("/", auth, authorizeRoles("admin"), reservationsController.add);
  *   put:
  *     summary: Mettre à jour une réservation
  *     tags: [Reservations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -123,6 +139,10 @@ router.post("/", auth, authorizeRoles("admin"), reservationsController.add);
  *         description: Réservation mise à jour
  *       404:
  *         description: Réservation non trouvée
+ *       401:
+ *         description: Token manquant ou invalide
+ *       403:
+ *         description: Acces reserve a l'admin
  *       500:
  *         description: Erreur serveur
  */
@@ -139,6 +159,8 @@ router.put(
  *   delete:
  *     summary: Supprimer une réservation
  *     tags: [Reservations]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -155,6 +177,10 @@ router.put(
  *         description: Réservation supprimée
  *       404:
  *         description: Réservation non trouvée
+ *       401:
+ *         description: Token manquant ou invalide
+ *       403:
+ *         description: Acces reserve a l'admin
  *       500:
  *         description: Erreur serveur
  */

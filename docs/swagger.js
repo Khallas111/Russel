@@ -9,6 +9,15 @@ const options = {
       description:
         "Documentation de l'API pour le port de plaisance de Russel - Catways, Reservations & Users",
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
     servers: [
       {
         url: "http://localhost:3000",

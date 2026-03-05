@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Acces refuse</h1>
+        <p>
+          Cette page est reservee au role <strong>admin</strong>.
+          Vous etes connecte en tant que <strong><%= user.role %></strong>.
+        </p>
+        <div class="actions">
+          <a href="/dashboard">Retour au tableau de bord</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+

@@ -16,6 +16,8 @@ const authorizeRoles = require("../../middlewares/authorizeRoles");
  *   get:
  *     summary: Récupérer tous les catways
  *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Liste des catways
@@ -28,6 +30,8 @@ const authorizeRoles = require("../../middlewares/authorizeRoles");
  *                 catwayState: "Disponible"
  *       500:
  *         description: Erreur serveur
+ *       401:
+ *         description: Token manquant ou invalide
  */
 router.get("/", auth, catwaysController.getAll);
 
@@ -37,6 +41,8 @@ router.get("/", auth, catwaysController.getAll);
  *   post:
  *     summary: Créer un nouveau catway
  *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -56,6 +62,10 @@ router.get("/", auth, catwaysController.getAll);
  *               catwayState: "Disponible"
  *       400:
  *         description: Requête invalide
+ *       401:
+ *         description: Token manquant ou invalide
+ *       403:
+ *         description: Acces reserve a l'admin
  *       500:
  *         description: Erreur serveur
  */
@@ -67,6 +77,8 @@ router.post("/", auth, authorizeRoles("admin"), catwaysController.add);
  *   get:
  *     summary: Récupérer un catway par son numéro
  *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -79,6 +91,8 @@ router.post("/", auth, authorizeRoles("admin"), catwaysController.add);
  *         description: Catway trouvé
  *       404:
  *         description: Catway non trouvé
+ *       401:
+ *         description: Token manquant ou invalide
  *       500:
  *         description: Erreur serveur
  */
@@ -90,6 +104,8 @@ router.get("/:catwayNumber", auth, catwaysController.getByNumber);
  *   put:
  *     summary: Mettre à jour l'état d'un catway (Disponible/Occupé)
  *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -108,6 +124,10 @@ router.get("/:catwayNumber", auth, catwaysController.getByNumber);
  *         description: Catway mis à jour
  *       404:
  *         description: Catway non trouvé
+ *       401:
+ *         description: Token manquant ou invalide
+ *       403:
+ *         description: Acces reserve a l'admin
  *       500:
  *         description: Erreur serveur
  */
@@ -124,6 +144,8 @@ router.put(
  *   delete:
  *     summary: Supprimer un catway
  *     tags: [Catways]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: catwayNumber
@@ -136,6 +158,10 @@ router.put(
  *         description: Catway supprimé
  *       404:
  *         description: Catway non trouvé
+ *       401:
+ *         description: Token manquant ou invalide
+ *       403:
+ *         description: Acces reserve a l'admin
  *       500:
  *         description: Erreur serveur
  */

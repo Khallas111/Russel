@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card wide">
+        <h1>Utilisateurs - CRUD (Admin)</h1>
+        <p>Connecte en tant que <strong><%= user.username %></strong> (<%= user.role %>).</p>
+        <nav class="actions">
+          <a href="/dashboard">Tableau de bord</a>
+          <a href="/catways">CRUD Catways</a>
+          <a href="/reservations">CRUD Reservations</a>
+          <a href="/api-docs" target="_blank" rel="noopener noreferrer">API Docs</a>
+        </nav>
+
+        <div class="crud-grid">
+          <form id="users-get-all" class="form card-lite">
+            <h2>GET Tous</h2>
+            <button type="submit">Lister tous les utilisateurs</button>
+          </form>
+
+          <form id="users-get-one" class="form card-lite">
+            <h2>GET Un</h2>
+            <label for="get-user-email">email</label>
+            <input id="get-user-email" name="email" type="email" required />
+            <button type="submit">Recuperer</button>
+          </form>
+
+          <form id="users-create" class="form card-lite">
+            <h2>POST</h2>
+            <label for="create-user-name">username</label>
+            <input id="create-user-name" name="username" type="text" required />
+            <label for="create-user-email">email</label>
+            <input id="create-user-email" name="email" type="email" required />
+            <label for="create-user-password">password</label>
+            <input id="create-user-password" name="password" type="password" required />
+            <label for="create-user-role">role</label>
+            <select id="create-user-role" name="role" required>
+              <option value="standard">standard</option>
+              <option value="admin">admin</option>
+            </select>
+            <button type="submit">Creer</button>
+          </form>
+
+          <form id="users-update" class="form card-lite">
+            <h2>PUT</h2>
+            <label for="update-user-email-target">email cible</label>
+            <input id="update-user-email-target" name="emailTarget" type="email" required />
+            <label for="update-user-name">username</label>
+            <input id="update-user-name" name="username" type="text" />
+            <label for="update-user-password">password</label>
+            <input id="update-user-password" name="password" type="password" />
+            <label for="update-user-role">role</label>
+            <select id="update-user-role" name="role">
+              <option value="">(ne pas modifier)</option>
+              <option value="standard">standard</option>
+              <option value="admin">admin</option>
+            </select>
+            <button type="submit">Mettre a jour</button>
+          </form>
+
+          <form id="users-delete" class="form card-lite">
+            <h2>DELETE</h2>
+            <label for="delete-user-email">email</label>
+            <input id="delete-user-email" name="email" type="email" required />
+            <button type="submit">Supprimer</button>
+          </form>
+        </div>
+
+        <h2>Reponse API</h2>
+        <pre id="output" class="output">Aucune requete envoyee.</pre>
+      </section>
+    </main>
+
+    <script>
+      const TOKEN = <%- JSON.stringify(token) %>;
+      const output = document.getElementById("output");
+
+      async function callApi(method, path, body) {
+        const options = {
+          method,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        };
+
+        if (body) {
+          options.headers["Content-Type"] = "application/json";
+          options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(path, options);
+        const text = await response.text();
+        let parsed = text;
+
+        try {
+          parsed = JSON.parse(text);
+        } catch (_) {}
+
+        output.textContent = JSON.stringify(
+          { status: response.status, data: parsed },
+          null,
+          2,
+        );
+      }
+
+      document.getElementById("users-get-all").addEventListener("submit", (e) => {
+        e.preventDefault();
+        callApi("GET", "/api/users");
+      });
+
+      document.getElementById("users-get-one").addEventListener("submit", (e) => {
+        e.preventDefault();
+        callApi("GET", `/api/users/${encodeURIComponent(e.target.email.value)}`);
+      });
+
+      document.getElementById("users-create").addEventListener("submit", (e) => {
+        e.preventDefault();
+        callApi("POST", "/api/users", {
+          username: e.target.username.value,
+          email: e.target.email.value,
+          password: e.target.password.value,
+          role: e.target.role.value,
+        });
+      });
+
+      document.getElementById("users-update").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const payload = {};
+        if (e.target.username.value) payload.username = e.target.username.value;
+        if (e.target.password.value) payload.password = e.target.password.value;
+        if (e.target.role.value) payload.role = e.target.role.value;
+
+        callApi(
+          "PUT",
+          `/api/users/${encodeURIComponent(e.target.emailTarget.value)}`,
+          payload,
+        );
+      });
+
+      document.getElementById("users-delete").addEventListener("submit", (e) => {
+        e.preventDefault();
+        callApi("DELETE", `/api/users/${encodeURIComponent(e.target.email.value)}`);
+      });
+    </script>
+  </body>
+</html>
+
