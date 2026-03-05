@@ -20,6 +20,24 @@ exports.getAll = async (req, res, next) => {
 };
 
 /**
+ * GET /users/me
+ * Récupérer le profil de l'utilisateur connecté
+ */
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+/**
  * GET /users/:email
  * Récupérer un utilisateur par email
  */
@@ -48,15 +66,21 @@ exports.getByEmail = async (req, res, next) => {
  */
 exports.add = async (req, res, next) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, role } = req.body;
 
-    const user = await User.create({ username, email, password });
+    const user = await User.create({ username, email, password, role });
 
     const userResponse = user.toObject();
     delete userResponse.password;
 
     return res.status(201).json(userResponse);
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
+    if (error.code === 11000) {
+      return res.status(409).json({ message: "Email déjà utilisé" });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -80,6 +104,9 @@ exports.update = async (req, res, next) => {
     if (req.body.password) {
       user.password = req.body.password; // sera hashé par le pre("save")
     }
+    if (req.body.role) {
+      user.role = req.body.role;
+    }
 
     await user.save();
 
@@ -88,6 +115,9 @@ exports.update = async (req, res, next) => {
 
     return res.status(200).json(userResponse);
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     return res.status(500).json({ message: error.message });
   }
 };

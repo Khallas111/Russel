@@ -2,7 +2,8 @@ const express = require("express");
 // { mergeParams: true } pour récupérer catwayNumber depuis /api/catways/:catwayNumber
 const router = express.Router({ mergeParams: true });
 const reservationsController = require("../../controllers/reservations");
-
+const auth = require("../../middlewares/auth");
+const authorizeRoles = require("../../middlewares/authorizeRoles");
 /**
  * @swagger
  * tags:
@@ -31,7 +32,7 @@ const reservationsController = require("../../controllers/reservations");
  *       500:
  *         description: Erreur serveur
  */
-router.get("/", reservationsController.getAllForCatway);
+router.get("/", auth, reservationsController.getAllForCatway);
 
 /**
  * @swagger
@@ -58,7 +59,7 @@ router.get("/", reservationsController.getAllForCatway);
  *       500:
  *         description: Erreur serveur
  */
-router.get("/:idReservation", reservationsController.getById);
+router.get("/:idReservation", auth, reservationsController.getById);
 
 /**
  * @swagger
@@ -89,7 +90,7 @@ router.get("/:idReservation", reservationsController.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/", reservationsController.add);
+router.post("/", auth, authorizeRoles("admin"), reservationsController.add);
 
 /**
  * @swagger
@@ -125,7 +126,12 @@ router.post("/", reservationsController.add);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/:idReservation", reservationsController.update);
+router.put(
+  "/:idReservation",
+  auth,
+  authorizeRoles("admin"),
+  reservationsController.update,
+);
 
 /**
  * @swagger
@@ -152,6 +158,11 @@ router.put("/:idReservation", reservationsController.update);
  *       500:
  *         description: Erreur serveur
  */
-router.delete("/:idReservation", reservationsController.delete);
+router.delete(
+  "/:idReservation",
+  auth,
+  authorizeRoles("admin"),
+  reservationsController.delete,
+);
 
 module.exports = router;

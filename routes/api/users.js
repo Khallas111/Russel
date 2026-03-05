@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const usersController = require("../../controllers/users");
-
+const auth = require("../../middlewares/auth");
+const authorizeRoles = require("../../middlewares/authorizeRoles");
 /**
  * @swagger
  * tags:
@@ -26,7 +27,10 @@ const usersController = require("../../controllers/users");
  *                 email: "john@mail.com"
  */
 // GET /users → liste de tous les utilisateurs (sans password)
-router.get("/", usersController.getAll);
+router.get("/", auth, authorizeRoles("admin"), usersController.getAll);
+
+// GET /users/me → profil utilisateur connecté
+router.get("/me", auth, usersController.getMe);
 
 /**
  * @swagger
@@ -48,7 +52,7 @@ router.get("/", usersController.getAll);
  *         description: Utilisateur non trouvé
  */
 // GET /users/:email → récupérer un utilisateur par email
-router.get("/:email", usersController.getByEmail);
+router.get("/:email", auth, authorizeRoles("admin"), usersController.getByEmail);
 
 /**
  * @swagger
@@ -71,7 +75,7 @@ router.get("/:email", usersController.getByEmail);
  *         description: Erreur serveur
  */
 // POST /users → créer un nouvel utilisateur
-router.post("/", usersController.add);
+router.post("/", auth, authorizeRoles("admin"), usersController.add);
 
 /**
  * @swagger
@@ -102,7 +106,7 @@ router.post("/", usersController.add);
  *         description: Erreur serveur
  */
 // PUT /users/:email → mettre à jour username et/ou password
-router.put("/:email", usersController.update);
+router.put("/:email", auth, authorizeRoles("admin"), usersController.update);
 
 /**
  * @swagger
@@ -126,6 +130,6 @@ router.put("/:email", usersController.update);
  *         description: Erreur serveur
  */
 // DELETE /users/:email → supprimer un utilisateur
-router.delete("/:email", usersController.delete);
+router.delete("/:email", auth, authorizeRoles("admin"), usersController.delete);
 
 module.exports = router;

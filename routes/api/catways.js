@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const catwaysController = require("../../controllers/catways");
-
+const auth = require("../../middlewares/auth");
+const authorizeRoles = require("../../middlewares/authorizeRoles");
 /**
  * @swagger
  * tags:
@@ -28,7 +29,7 @@ const catwaysController = require("../../controllers/catways");
  *       500:
  *         description: Erreur serveur
  */
-router.get("/", catwaysController.getAll);
+router.get("/", auth, catwaysController.getAll);
 
 /**
  * @swagger
@@ -58,7 +59,7 @@ router.get("/", catwaysController.getAll);
  *       500:
  *         description: Erreur serveur
  */
-router.post("/", catwaysController.add);
+router.post("/", auth, authorizeRoles("admin"), catwaysController.add);
 
 /**
  * @swagger
@@ -81,7 +82,7 @@ router.post("/", catwaysController.add);
  *       500:
  *         description: Erreur serveur
  */
-router.get("/:catwayNumber", catwaysController.getByNumber);
+router.get("/:catwayNumber", auth, catwaysController.getByNumber);
 
 /**
  * @swagger
@@ -110,7 +111,12 @@ router.get("/:catwayNumber", catwaysController.getByNumber);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/:catwayNumber", catwaysController.updateState);
+router.put(
+  "/:catwayNumber",
+  auth,
+  authorizeRoles("admin"),
+  catwaysController.updateState,
+);
 
 /**
  * @swagger
@@ -133,6 +139,11 @@ router.put("/:catwayNumber", catwaysController.updateState);
  *       500:
  *         description: Erreur serveur
  */
-router.delete("/:catwayNumber", catwaysController.delete);
+router.delete(
+  "/:catwayNumber",
+  auth,
+  authorizeRoles("admin"),
+  catwaysController.delete,
+);
 
 module.exports = router;
