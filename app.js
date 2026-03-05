@@ -7,7 +7,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./docs/swagger");
-
+const authRouter = require("./routes/api/auth");
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/api/users");
 const catwaysRouter = require("./routes/api/catways");
@@ -15,7 +15,10 @@ const reservationsRouter = require("./routes/api/reservations");
 var app = express();
 
 initClientDbConnection().catch((error) => {
-  console.error("Impossible d'initialiser la connexion MongoDB:", error.message);
+  console.error(
+    "Impossible d'initialiser la connexion MongoDB:",
+    error.message,
+  );
   process.exit(1);
 });
 
@@ -24,7 +27,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use("/api/auth", authRouter);
 app.use("/", indexRouter);
 app.use("/api/users", usersRouter);
 
