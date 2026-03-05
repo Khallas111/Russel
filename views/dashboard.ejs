@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Tableau de bord</h1>
+        <p>Bienvenue <strong><%= user.username %></strong>.</p>
+        <ul>
+          <li>Email: <%= user.email %></li>
+          <li>Role: <%= user.role %></li>
+        </ul>
+
+        <div class="actions">
+          <a href="/api-docs" target="_blank" rel="noopener noreferrer">
+            Documentation API
+          </a>
+        </div>
+
+        <form method="post" action="/logout" class="logout-form">
+          <button type="submit">Se deconnecter</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
+

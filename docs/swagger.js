@@ -7,7 +7,7 @@ const options = {
       title: "Russel API",
       version: "1.0.0",
       description:
-        "Documentation de l'API pour le port de plaisance de Russel - Catways & Reservations",
+        "Documentation de l'API pour le port de plaisance de Russel - Catways, Reservations & Users",
     },
     servers: [
       {

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card">
+        <h1>Russel API</h1>
+        <p>
+          Application de gestion du port de plaisance de Russel: utilisateurs,
+          catways et reservations.
+        </p>
+
+        <% if (error) { %>
+        <p class="error"><%= error %></p>
+        <% } %>
+
+        <form method="post" action="/login" class="form">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required />
+
+          <label for="password">Mot de passe</label>
+          <input id="password" name="password" type="password" required />
+
+          <button type="submit">Se connecter</button>
+        </form>
+
+        <p>
+          <a href="/api-docs" target="_blank" rel="noopener noreferrer">
+            Voir la documentation de l'API
+          </a>
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
+
