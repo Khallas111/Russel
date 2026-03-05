@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card wide">
+        <h1>Reservations - CRUD</h1>
+        <p>Connecte en tant que <strong><%= user.username %></strong> (<%= user.role %>).</p>
+        <nav class="actions">
+          <a href="/dashboard">Tableau de bord</a>
+          <a href="/catways">CRUD Catways</a>
+          <% if (user.role === "admin") { %><a href="/users">CRUD Utilisateurs</a><% } %>
+          <a href="/api-docs" target="_blank" rel="noopener noreferrer">API Docs</a>
+        </nav>
+
+        <div class="crud-grid">
+          <form id="reservations-get-all" class="form card-lite">
+            <h2>GET Toutes (par catway)</h2>
+            <label for="get-res-catway-number">catwayNumber</label>
+            <input id="get-res-catway-number" name="catwayNumber" type="number" required />
+            <button type="submit">Lister</button>
+          </form>
+
+          <form id="reservations-get-one" class="form card-lite">
+            <h2>GET Une</h2>
+            <label for="get-one-catway-number">catwayNumber</label>
+            <input id="get-one-catway-number" name="catwayNumber" type="number" required />
+            <label for="get-one-res-id">idReservation</label>
+            <input id="get-one-res-id" name="idReservation" type="text" required />
+            <button type="submit">Recuperer</button>
+          </form>
+
+          <% if (isAdmin) { %>
+          <form id="reservations-create" class="form card-lite">
+            <h2>POST</h2>
+            <label for="create-res-catway-number">catwayNumber</label>
+            <input id="create-res-catway-number" name="catwayNumber" type="number" required />
+            <label for="create-client-name">clientName</label>
+            <input id="create-client-name" name="clientName" type="text" required />
+            <label for="create-boat-name">boatName</label>
+            <input id="create-boat-name" name="boatName" type="text" required />
+            <label for="create-start-date">startDate</label>
+            <input id="create-start-date" name="startDate" type="date" required />
+            <label for="create-end-date">endDate</label>
+            <input id="create-end-date" name="endDate" type="date" required />
+            <button type="submit">Creer</button>
+          </form>
+
+          <form id="reservations-update" class="form card-lite">
+            <h2>PUT</h2>
+            <label for="update-res-catway-number">catwayNumber</label>
+            <input id="update-res-catway-number" name="catwayNumber" type="number" required />
+            <label for="update-res-id">idReservation</label>
+            <input id="update-res-id" name="idReservation" type="text" required />
+            <label for="update-client-name">clientName</label>
+            <input id="update-client-name" name="clientName" type="text" />
+            <label for="update-boat-name">boatName</label>
+            <input id="update-boat-name" name="boatName" type="text" />
+            <label for="update-start-date">startDate</label>
+            <input id="update-start-date" name="startDate" type="date" />
+            <label for="update-end-date">endDate</label>
+            <input id="update-end-date" name="endDate" type="date" />
+            <button type="submit">Mettre a jour</button>
+          </form>
+
+          <form id="reservations-delete" class="form card-lite">
+            <h2>DELETE</h2>
+            <label for="delete-res-catway-number">catwayNumber</label>
+            <input id="delete-res-catway-number" name="catwayNumber" type="number" required />
+            <label for="delete-res-id">idReservation</label>
+            <input id="delete-res-id" name="idReservation" type="text" required />
+            <button type="submit">Supprimer</button>
+          </form>
+          <% } else { %>
+          <section class="card-lite">
+            <h2>Operations admin</h2>
+            <p>Le role standard ne peut pas creer/modifier/supprimer des reservations.</p>
+          </section>
+          <% } %>
+        </div>
+
+        <h2>Reponse API</h2>
+        <pre id="output" class="output">Aucune requete envoyee.</pre>
+      </section>
+    </main>
+
+    <script>
+      const TOKEN = <%- JSON.stringify(token) %>;
+      const output = document.getElementById("output");
+
+      async function callApi(method, path, body) {
+        const options = {
+          method,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        };
+
+        if (body) {
+          options.headers["Content-Type"] = "application/json";
+          options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(path, options);
+        const text = await response.text();
+        let parsed = text;
+
+        try {
+          parsed = JSON.parse(text);
+        } catch (_) {}
+
+        output.textContent = JSON.stringify(
+          { status: response.status, data: parsed },
+          null,
+          2,
+        );
+      }
+
+      document.getElementById("reservations-get-all").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const catwayNumber = e.target.catwayNumber.value;
+        callApi("GET", `/api/catways/${catwayNumber}/reservations`);
+      });
+
+      document.getElementById("reservations-get-one").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const catwayNumber = e.target.catwayNumber.value;
+        const idReservation = e.target.idReservation.value;
+        callApi("GET", `/api/catways/${catwayNumber}/reservations/${idReservation}`);
+      });
+
+      const createForm = document.getElementById("reservations-create");
+      if (createForm) {
+        createForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const catwayNumber = e.target.catwayNumber.value;
+          callApi("POST", `/api/catways/${catwayNumber}/reservations`, {
+            clientName: e.target.clientName.value,
+            boatName: e.target.boatName.value,
+            startDate: e.target.startDate.value,
+            endDate: e.target.endDate.value,
+          });
+        });
+      }
+
+      const updateForm = document.getElementById("reservations-update");
+      if (updateForm) {
+        updateForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const catwayNumber = e.target.catwayNumber.value;
+          const idReservation = e.target.idReservation.value;
+          const payload = {};
+
+          if (e.target.clientName.value) payload.clientName = e.target.clientName.value;
+          if (e.target.boatName.value) payload.boatName = e.target.boatName.value;
+          if (e.target.startDate.value) payload.startDate = e.target.startDate.value;
+          if (e.target.endDate.value) payload.endDate = e.target.endDate.value;
+
+          callApi(
+            "PUT",
+            `/api/catways/${catwayNumber}/reservations/${idReservation}`,
+            payload,
+          );
+        });
+      }
+
+      const deleteForm = document.getElementById("reservations-delete");
+      if (deleteForm) {
+        deleteForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const catwayNumber = e.target.catwayNumber.value;
+          const idReservation = e.target.idReservation.value;
+          callApi("DELETE", `/api/catways/${catwayNumber}/reservations/${idReservation}`);
+        });
+      }
+    </script>
+  </body>
+</html>
+

@@ -13,6 +13,9 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/api/users");
 const catwaysRouter = require("./routes/api/catways");
 const reservationsRouter = require("./routes/api/reservations");
+const viewCatwaysRouter = require("./routes/ViewCatways");
+const viewReservationsRouter = require("./routes/ViewReservations");
+const viewUsersRouter = require("./routes/viewUsers");
 var app = express();
 
 initClientDbConnection().catch((error) => {
@@ -45,6 +48,9 @@ app.use(
 app.use(express.static(path.join(__dirname, "public"), { index: false }));
 app.use("/api/auth", authRouter);
 app.use("/", indexRouter);
+app.use("/catways", viewCatwaysRouter);
+app.use("/reservations", viewReservationsRouter);
+app.use("/users", viewUsersRouter);
 app.use("/api/users", usersRouter);
 
 // Routes Catways

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/site.css" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card wide">
+        <h1>Catways - CRUD</h1>
+        <p>Connecte en tant que <strong><%= user.username %></strong> (<%= user.role %>).</p>
+        <nav class="actions">
+          <a href="/dashboard">Tableau de bord</a>
+          <a href="/reservations">CRUD Reservations</a>
+          <% if (user.role === "admin") { %><a href="/users">CRUD Utilisateurs</a><% } %>
+          <a href="/api-docs" target="_blank" rel="noopener noreferrer">API Docs</a>
+        </nav>
+
+        <div class="crud-grid">
+          <form id="catways-get-all" class="form card-lite">
+            <h2>GET Tous</h2>
+            <button type="submit">Lister tous les catways</button>
+          </form>
+
+          <form id="catways-get-one" class="form card-lite">
+            <h2>GET Un</h2>
+            <label for="get-catway-number">catwayNumber</label>
+            <input id="get-catway-number" name="catwayNumber" type="number" required />
+            <button type="submit">Recuperer</button>
+          </form>
+
+          <% if (isAdmin) { %>
+          <form id="catways-create" class="form card-lite">
+            <h2>POST</h2>
+            <label for="create-catway-number">catwayNumber</label>
+            <input id="create-catway-number" name="catwayNumber" type="number" required />
+            <label for="create-catway-type">catwayType</label>
+            <select id="create-catway-type" name="catwayType" required>
+              <option value="long">long</option>
+              <option value="short">short</option>
+            </select>
+            <button type="submit">Creer</button>
+          </form>
+
+          <form id="catways-update" class="form card-lite">
+            <h2>PUT</h2>
+            <label for="update-catway-number">catwayNumber</label>
+            <input id="update-catway-number" name="catwayNumber" type="number" required />
+            <label for="update-catway-state">catwayState</label>
+            <input id="update-catway-state" name="catwayState" type="text" required />
+            <button type="submit">Mettre a jour</button>
+          </form>
+
+          <form id="catways-delete" class="form card-lite">
+            <h2>DELETE</h2>
+            <label for="delete-catway-number">catwayNumber</label>
+            <input id="delete-catway-number" name="catwayNumber" type="number" required />
+            <button type="submit">Supprimer</button>
+          </form>
+          <% } else { %>
+          <section class="card-lite">
+            <h2>Operations admin</h2>
+            <p>Le role standard ne peut pas creer/modifier/supprimer des catways.</p>
+          </section>
+          <% } %>
+        </div>
+
+        <h2>Reponse API</h2>
+        <pre id="output" class="output">Aucune requete envoyee.</pre>
+      </section>
+    </main>
+
+    <script>
+      const TOKEN = <%- JSON.stringify(token) %>;
+      const output = document.getElementById("output");
+
+      async function callApi(method, path, body) {
+        const options = {
+          method,
+          headers: {
+            Authorization: `Bearer ${TOKEN}`,
+          },
+        };
+
+        if (body) {
+          options.headers["Content-Type"] = "application/json";
+          options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(path, options);
+        const text = await response.text();
+        let parsed = text;
+
+        try {
+          parsed = JSON.parse(text);
+        } catch (_) {}
+
+        output.textContent = JSON.stringify(
+          { status: response.status, data: parsed },
+          null,
+          2,
+        );
+      }
+
+      document.getElementById("catways-get-all").addEventListener("submit", (e) => {
+        e.preventDefault();
+        callApi("GET", "/api/catways");
+      });
+
+      document.getElementById("catways-get-one").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const number = e.target.catwayNumber.value;
+        callApi("GET", `/api/catways/${number}`);
+      });
+
+      const createForm = document.getElementById("catways-create");
+      if (createForm) {
+        createForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          callApi("POST", "/api/catways", {
+            catwayNumber: Number(e.target.catwayNumber.value),
+            catwayType: e.target.catwayType.value,
+          });
+        });
+      }
+
+      const updateForm = document.getElementById("catways-update");
+      if (updateForm) {
+        updateForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const number = e.target.catwayNumber.value;
+          callApi("PUT", `/api/catways/${number}`, {
+            catwayState: e.target.catwayState.value,
+          });
+        });
+      }
+
+      const deleteForm = document.getElementById("catways-delete");
+      if (deleteForm) {
+        deleteForm.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const number = e.target.catwayNumber.value;
+          callApi("DELETE", `/api/catways/${number}`);
+        });
+      }
+    </script>
+  </body>
+</html>
+
