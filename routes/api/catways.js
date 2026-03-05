@@ -62,17 +62,17 @@ router.post("/", catwaysController.add);
 
 /**
  * @swagger
- * /api/catways/{id}:
+ * /api/catways/{catwayNumber}:
  *   get:
- *     summary: Récupérer un catway par son ID
+ *     summary: Récupérer un catway par son numéro
  *     tags: [Catways]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
- *         description: ID du catway
+ *           type: number
+ *         description: Numéro du catway
  *     responses:
  *       200:
  *         description: Catway trouvé
@@ -81,21 +81,21 @@ router.post("/", catwaysController.add);
  *       500:
  *         description: Erreur serveur
  */
-router.get("/:id", catwaysController.getById);
+router.get("/:catwayNumber", catwaysController.getByNumber);
 
 /**
  * @swagger
- * /api/catways/{id}:
+ * /api/catways/{catwayNumber}:
  *   put:
  *     summary: Mettre à jour l'état d'un catway (Disponible/Occupé)
  *     tags: [Catways]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
- *         description: ID du catway
+ *           type: number
+ *         description: Numéro du catway
  *     requestBody:
  *       required: true
  *       content:
@@ -110,21 +110,21 @@ router.get("/:id", catwaysController.getById);
  *       500:
  *         description: Erreur serveur
  */
-router.put("/:id", catwaysController.updateState);
+router.put("/:catwayNumber", catwaysController.updateState);
 
 /**
  * @swagger
- * /api/catways/{id}:
+ * /api/catways/{catwayNumber}:
  *   delete:
  *     summary: Supprimer un catway
  *     tags: [Catways]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
- *         description: ID du catway à supprimer
+ *           type: number
+ *         description: Numéro du catway
  *     responses:
  *       200:
  *         description: Catway supprimé
@@ -133,6 +133,6 @@ router.put("/:id", catwaysController.updateState);
  *       500:
  *         description: Erreur serveur
  */
-router.delete("/:id", catwaysController.delete);
+router.delete("/:catwayNumber", catwaysController.delete);
 
 module.exports = router;

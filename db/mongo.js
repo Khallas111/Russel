@@ -6,5 +6,6 @@ exports.initClientDbConnection = async () => {
     console.log("MongoDB connection established successfully");
   } catch (error) {
     console.error("MongoDB connection failed:", error.message);
+    throw error;
   }
 };

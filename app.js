@@ -14,7 +14,10 @@ const catwaysRouter = require("./routes/api/catways");
 const reservationsRouter = require("./routes/api/reservations");
 var app = express();
 
-initClientDbConnection();
+initClientDbConnection().catch((error) => {
+  console.error("Impossible d'initialiser la connexion MongoDB:", error.message);
+  process.exit(1);
+});
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -30,7 +33,7 @@ app.use("/api/catways", catwaysRouter);
 
 // Routes Réservations (imbriquées dans Catways)
 // Exemple : GET /api/catways/123/reservations pour lister les réservations du catway 123
-app.use("/api/catways/:id/reservations", reservationsRouter);
+app.use("/api/catways/:catwayNumber/reservations", reservationsRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

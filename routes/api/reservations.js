@@ -1,5 +1,5 @@
 const express = require("express");
-//On utilise { mergeParams: true } pour que :id du catway soit accessible dans les controllers (req.params.id).
+// { mergeParams: true } pour récupérer catwayNumber depuis /api/catways/:catwayNumber
 const router = express.Router({ mergeParams: true });
 const reservationsController = require("../../controllers/reservations");
 
@@ -12,17 +12,17 @@ const reservationsController = require("../../controllers/reservations");
 
 /**
  * @swagger
- * /api/catways/{id}/reservations:
+ * /api/catways/{catwayNumber}/reservations:
  *   get:
  *     summary: Lister toutes les réservations d'un catway
  *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
- *         description: ID du catway
+ *           type: number
+ *         description: Numéro du catway
  *     responses:
  *       200:
  *         description: Liste des réservations
@@ -31,20 +31,20 @@ const reservationsController = require("../../controllers/reservations");
  *       500:
  *         description: Erreur serveur
  */
-router.get("/", reservationsController.getAllByCatway);
+router.get("/", reservationsController.getAllForCatway);
 
 /**
  * @swagger
- * /api/catways/{id}/reservations/{idReservation}:
+ * /api/catways/{catwayNumber}/reservations/{idReservation}:
  *   get:
  *     summary: Récupérer une réservation par son ID
  *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *       - in: path
  *         name: idReservation
  *         required: true
@@ -62,16 +62,16 @@ router.get("/:idReservation", reservationsController.getById);
 
 /**
  * @swagger
- * /api/catways/{id}/reservations:
+ * /api/catways/{catwayNumber}/reservations:
  *   post:
  *     summary: Créer une réservation pour un catway
  *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *     requestBody:
  *       required: true
  *       content:
@@ -93,16 +93,16 @@ router.post("/", reservationsController.add);
 
 /**
  * @swagger
- * /api/catways/{id}/reservations/{idReservation}:
+ * /api/catways/{catwayNumber}/reservations/{idReservation}:
  *   put:
  *     summary: Mettre à jour une réservation
  *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *       - in: path
  *         name: idReservation
  *         required: true
@@ -129,16 +129,16 @@ router.put("/:idReservation", reservationsController.update);
 
 /**
  * @swagger
- * /api/catways/{id}/reservations/{idReservation}:
+ * /api/catways/{catwayNumber}/reservations/{idReservation}:
  *   delete:
  *     summary: Supprimer une réservation
  *     tags: [Reservations]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: catwayNumber
  *         required: true
  *         schema:
- *           type: string
+ *           type: number
  *       - in: path
  *         name: idReservation
  *         required: true

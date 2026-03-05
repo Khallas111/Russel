@@ -7,11 +7,17 @@ const Catway = require("../models/catway");
  */
 exports.getAllForCatway = async (req, res) => {
   try {
-    const catwayNumber = parseInt(req.params.id, 10);
+    const catwayNumber = parseInt(req.params.catwayNumber, 10);
+    if (Number.isNaN(catwayNumber)) {
+      return res.status(400).json({ message: "catwayNumber invalide" });
+    }
 
     const reservations = await Reservation.find({ catwayNumber });
     return res.status(200).json(reservations);
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "idReservation invalide" });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -22,10 +28,14 @@ exports.getAllForCatway = async (req, res) => {
  */
 exports.getById = async (req, res) => {
   try {
-    const { id: catwayNumber, reservationId } = req.params;
+    const catwayNumber = parseInt(req.params.catwayNumber, 10);
+    const { idReservation } = req.params;
+    if (Number.isNaN(catwayNumber)) {
+      return res.status(400).json({ message: "catwayNumber invalide" });
+    }
 
     const reservation = await Reservation.findOne({
-      _id: reservationId,
+      _id: idReservation,
       catwayNumber,
     });
 
@@ -35,6 +45,9 @@ exports.getById = async (req, res) => {
 
     return res.status(200).json(reservation);
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({ message: error.message });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -45,7 +58,10 @@ exports.getById = async (req, res) => {
  */
 exports.add = async (req, res) => {
   try {
-    const catwayNumber = parseInt(req.params.id, 10);
+    const catwayNumber = parseInt(req.params.catwayNumber, 10);
+    if (Number.isNaN(catwayNumber)) {
+      return res.status(400).json({ message: "catwayNumber invalide" });
+    }
     const { clientName, boatName, startDate, endDate } = req.body;
 
     // Vérifier que le catway existe
@@ -64,6 +80,9 @@ exports.add = async (req, res) => {
 
     return res.status(201).json(reservation);
   } catch (error) {
+    if (error.name === "ValidationError" || error.name === "CastError") {
+      return res.status(400).json({ message: error.message });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -74,13 +93,17 @@ exports.add = async (req, res) => {
  */
 exports.update = async (req, res) => {
   try {
-    const { id: catwayNumber, reservationId } = req.params;
+    const catwayNumber = parseInt(req.params.catwayNumber, 10);
+    const { idReservation } = req.params;
+    if (Number.isNaN(catwayNumber)) {
+      return res.status(400).json({ message: "catwayNumber invalide" });
+    }
     const updates = req.body;
 
     const reservation = await Reservation.findOneAndUpdate(
-      { _id: reservationId, catwayNumber },
+      { _id: idReservation, catwayNumber },
       updates,
-      { new: true },
+      { new: true, runValidators: true },
     );
 
     if (!reservation) {
@@ -89,6 +112,9 @@ exports.update = async (req, res) => {
 
     return res.status(200).json(reservation);
   } catch (error) {
+    if (error.name === "CastError") {
+      return res.status(400).json({ message: "idReservation invalide" });
+    }
     return res.status(500).json({ message: error.message });
   }
 };
@@ -99,10 +125,14 @@ exports.update = async (req, res) => {
  */
 exports.delete = async (req, res) => {
   try {
-    const { id: catwayNumber, reservationId } = req.params;
+    const catwayNumber = parseInt(req.params.catwayNumber, 10);
+    const { idReservation } = req.params;
+    if (Number.isNaN(catwayNumber)) {
+      return res.status(400).json({ message: "catwayNumber invalide" });
+    }
 
     const reservation = await Reservation.findOneAndDelete({
-      _id: reservationId,
+      _id: idReservation,
       catwayNumber,
     });
 
